@@ -1,13 +1,12 @@
+# -*- coding: utf-8 -*-
 from datetime import timedelta
 from django.utils import timezone
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.db.models.signals import post_save, pre_save
 from django.utils.timezone import datetime
-from forest_fire import settings
+from config import settings
 from django.contrib.gis.db import models
-from simple_translation.utils import get_language_from_request
-from simple_translation.translation_pool import translation_pool
 from paintstore.fields import ColorPickerField
 from django.utils.html import mark_safe
 

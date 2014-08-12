@@ -4,10 +4,8 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.db.models.signals import post_save, pre_save
 from django.utils.timezone import datetime
-from forest_fire import settings
+from config import settings
 from django.contrib.gis.db import models
-from simple_translation.utils import get_language_from_request
-from simple_translation.translation_pool import translation_pool
 from paintstore.fields import ColorPickerField
 from django.utils.html import mark_safe
 from fires.models import Rothermel
@@ -16,8 +14,7 @@ from fires.models import Rothermel
 class ForestryGroup(models.Model):
     name = models.CharField(max_length=255)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-           	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Forestry group')
         verbose_name_plural=_(u'Forestry groups')
@@ -27,8 +24,7 @@ class Forestry(models.Model):
     forestry_group = models.ForeignKey(ForestryGroup)
     name = models.CharField(max_length=250,)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Forestry')
         verbose_name_plural=_(u'Forestries')

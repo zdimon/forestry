@@ -12,6 +12,7 @@ from fires.models import Rothermel
 # Create your models here.
 
 class ForestryGroup(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(max_length=255)
     def __unicode__(self):
         return self.name
@@ -21,6 +22,7 @@ class ForestryGroup(models.Model):
 
 
 class Forestry(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     forestry_group = models.ForeignKey(ForestryGroup)
     name = models.CharField(max_length=250,)
     def __unicode__(self):

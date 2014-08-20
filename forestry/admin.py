@@ -14,6 +14,12 @@ django_databrowse.site.register(GeoKvartal)
 
 USE_GOOGLE_TERRAIN_TILES = False
 
+
+class ForestryAdmin(TranslationAdmin):
+    pass
+admin.site.register(Forestry, ForestryAdmin)
+
+
 class ForestryInline(TranslationTabularInline):
     model = Forestry
 

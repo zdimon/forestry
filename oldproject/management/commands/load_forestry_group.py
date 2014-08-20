@@ -14,7 +14,8 @@ logger.setLevel(logging.DEBUG)
 
 
 class Command(BaseCommand):
-
+    ''' перенос лесничеств со старой базы в новую
+    '''
 
     def handle(self, *args, **options):
         from oldproject.models import ForestryGroup as Oldforestrygroup, ForestryGroupTranslation as oldtrans
@@ -24,6 +25,7 @@ class Command(BaseCommand):
         ForestryGroup.objects.all().delete()
         for f in Oldforestrygroup.objects.all():
             nf = ForestryGroup()
+            nf.old_id=f.pk
             for ft in oldtrans.objects.filter(forestry_group_id = f.pk):
                 if ft.lang=='ru':
                     nf.name_ru = ft.name

@@ -33,15 +33,15 @@ class Forestry(models.Model):
 
 
 class GeoKvartal(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     forestry = models.ForeignKey(Forestry, verbose_name=_(u'Forestry name'))
-    oid = models.IntegerField(default=0)
     number = models.IntegerField(verbose_name=_(u'Block number'), default=0)
-    area = models.DecimalField(verbose_name=_(u'Square'), max_digits=10, decimal_places=2, default=0)
-    area_count = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=10, decimal_places=2, default=0)
-    center_zoom = models.IntegerField(default=0)
-    center_lon = models.DecimalField(max_digits=10, decimal_places=7, default=0)
-    center_lat = models.DecimalField(max_digits=10, decimal_places=7, default=0)
+    area = models.DecimalField(verbose_name=_(u'Square'), max_digits=10, decimal_places=2, default=0, blank=True)
+    area_count = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
+    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=10, decimal_places=2, default=0, blank=True)
+    center_zoom = models.IntegerField(default=0, blank=True)
+    center_lon = models.DecimalField(max_digits=18, decimal_places=7, default=0, blank=True)
+    center_lat = models.DecimalField(max_digits=18, decimal_places=7, default=0, blank=True)
     geom = models.MultiPolygonField()
     def __unicode__(self):
         return str(self.number)
@@ -51,9 +51,13 @@ class GeoKvartal(models.Model):
         verbose_name_plural=_(u'Blocks')
 
 
+
+
+
 #Polygon type
 class TypePolygon(models.Model):
-    rothermel = models.ForeignKey(Rothermel, blank=True, default=False)
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
+  #  rothermel = models.ForeignKey(Rothermel, blank=True, default=False)
     name = models.CharField(max_length=250, verbose_name=_(u'Polygon type'))
     is_pub = models.BooleanField(verbose_name=u'Active', default=False)
     fill_color = ColorPickerField(verbose_name=u'Filling color', blank=True, default= "#ff0000")

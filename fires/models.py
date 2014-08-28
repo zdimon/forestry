@@ -13,6 +13,7 @@ from django.utils.html import mark_safe
 
 
 class Rothermel(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     veget_type_id = models.IntegerField(verbose_name=_(u'Vegetation type id'), default=0)
     veget_type = models.CharField(verbose_name=_(u'Vegetation name'), max_length=250,default=False)
     reserve = models.DecimalField(verbose_name=_(u'The reserve of forest fuel, kg/m2'), max_digits=8, decimal_places=2, default=0)
@@ -111,9 +112,7 @@ class Fires2ExtingCosts(models.Model):
     sum = models.DecimalField(verbose_name=_(u'The amount of costs'), max_digits=10, decimal_places=2, default=0)
     def __unicode__(self):
         return unicode(self.fire) + u':  ' + unicode(self.exting_costs) + u' - ' + unicode(self.sum) or u''
-    class Meta:
-        verbose_name=_(u'Extinguishing costs for each fire')
-        verbose_name_plural=_(u'Extinguishing costs for each fire')
+
 
 
 class Fires2FireDamage(models.Model):
@@ -122,9 +121,7 @@ class Fires2FireDamage(models.Model):
     sum = models.DecimalField(verbose_name=_(u'The amount of damage'), max_digits=10, decimal_places=2, default=0)
     def __unicode__(self):
         return unicode(self.fire) + u':  ' + unicode(self.fire_damage) + u' - ' + unicode(self.sum) or u''
-    class Meta:
-        verbose_name=_(u'Damage from each fire')
-        verbose_name_plural=_(u'Damage from each fire')
+
 
 
 class Fires2FireWorked(models.Model):
@@ -133,9 +130,7 @@ class Fires2FireWorked(models.Model):
     num = models.DecimalField(verbose_name=_(u'The amount'), max_digits=5, decimal_places=2, default=0)
     def __unicode__(self):
         return unicode(self.fire) + u':  ' + unicode(self.fire_worked) + u' - ' + unicode(self.num) or u''
-    class Meta:
-        verbose_name=_(u'The amount of man-days or machine-shifts worked on fire')
-        verbose_name_plural=_(u'The amount of man-days or machine-shifts worked on fire')
+
 
 
 class Fires2GeoPolygon(models.Model):
@@ -147,26 +142,24 @@ class Fires2GeoPolygon(models.Model):
     def __unicode__(self):
      #   return unicode(self.fire) + u':  ' + unicode(self.geo_polygon) + u' - ' + unicode(self.kvartal) or u''
         return unicode(self.fire) or u''
-    class Meta:
-        verbose_name=_(u'Fire bound to the area')
-        verbose_name_plural=_(u'Fires bound to the area')
+
 
 
 class Meteocondition(models.Model):
     curdate = models.DateField(verbose_name=_(u'Date'))
     t = models.DecimalField(verbose_name=_(u'Temperature'), max_digits=5, decimal_places=2, default=0)
     p0 = models.DecimalField(verbose_name=_(u'Atmospheric pressure at the level of station (mm))'), max_digits=5, decimal_places=2, default=0, blank = True)
-    p = models.DecimalField(verbose_name=_(u'атмосферное давление, приведенное к среднему уровню моря (мм ртутного столбца)'), max_digits=5, decimal_places=2, blank = True)
-    pa = models.DecimalField(verbose_name=_(u'барическая тенденция: изменение атмосферного давления за последние три часа (мм ртутного столбца)'), max_digits=5, decimal_places=2,blank = True)
-    u = models.IntegerField(verbose_name=_(u'относительная влажность (%) на высоте 2 метра над поверхностью земли'), blank = True)
-    dd = models.CharField(verbose_name=_(u'направление ветра (румбы) на высоте 10-12 метров над землей, осредненное за 10-минутный период, непосредственное предшествовавший сроку наблюдения'), max_length=50, blank = True)
-    ff = models.IntegerField(verbose_name=_(u'скорость ветра на высоте 10-12 метров над землей, осредненное за 10-минутный период, непосредственное предшествовавший сроку наблюдения (метры в секунду)'), blank = True)
-    ff10 = models.IntegerField(verbose_name=_(u'максимальное значение порыва ветра на высоте 10-12 метров над землей, осредненное за 10-минутный период, непосредственное предшествовавший сроку наблюдения (метры в секунду)'), blank = True)
-    ff3 = models.IntegerField(verbose_name=_(u'максимальное значение порыва ветра на высоте 10-12 метров над землей за период между сроками (метры в секунду)'),blank = True, null = True)
-    n = models.CharField(verbose_name=_(u'общая облачность (%)'), max_length=50, blank = True)
-    ww = models.CharField(verbose_name=_(u'текущая погода, сообщаемая с метеостанции'), max_length=100, blank = True)
-    w1 = models.CharField(verbose_name=_(u'прошедшая погода между сроками наблюдения 1'), max_length=100, blank = True)
-    w2 = models.CharField(verbose_name=_(u'прошедшая погода между сроками наблюдения 2'), max_length=100, blank = True)
+    p = models.DecimalField(verbose_name=_(u''), max_digits=5, decimal_places=2, blank = True)
+    pa = models.DecimalField(verbose_name=_(u''), max_digits=5, decimal_places=2,blank = True)
+    u = models.IntegerField(verbose_name=_(u''), blank = True)
+    dd = models.CharField(verbose_name=_(u''), max_length=150, blank = True)
+    ff = models.IntegerField(verbose_name=_(u''), blank = True)
+    ff10 = models.IntegerField(verbose_name=_(u''), blank = True)
+    ff3 = models.IntegerField(verbose_name=_(u''),blank = True, null = True)
+    n = models.CharField(verbose_name=_(u''), max_length=150, blank = True)
+    ww = models.CharField(verbose_name=_(u''), max_length=100, blank = True)
+    w1 = models.CharField(verbose_name=_(u''), max_length=100, blank = True)
+    w2 = models.CharField(verbose_name=_(u''), max_length=100, blank = True)
     tn = models.DecimalField(verbose_name=_(u'min temperature during lost period (12 howers))'), max_digits=5, decimal_places=2, blank = True)
     tx = models.DecimalField(verbose_name=_(u'max temperature during lost period (12 howers))'), max_digits=5, decimal_places=2,blank = True)
     cl = models.CharField(max_length=100, blank = True)

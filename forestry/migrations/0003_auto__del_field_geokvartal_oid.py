@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'ForestryGroup.old_id'
-        db.add_column(u'forestry_forestrygroup', 'old_id',
-                      self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True),
-                      keep_default=False)
+        # Deleting field 'GeoKvartal.oid'
+        db.delete_column(u'forestry_geokvartal', 'oid')
 
 
     def backwards(self, orm):
-        # Deleting field 'ForestryGroup.old_id'
-        db.delete_column(u'forestry_forestrygroup', 'old_id')
+        # Adding field 'GeoKvartal.oid'
+        db.add_column(u'forestry_geokvartal', 'oid',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
 
 
     models = {
@@ -70,7 +70,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
             'name_en': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'name_ru': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
-            'name_uk': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'})
+            'name_uk': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'})
         },
         u'forestry.forestrygroup': {
             'Meta': {'object_name': 'ForestryGroup'},
@@ -92,7 +93,7 @@ class Migration(SchemaMigration):
             'geom': ('django.contrib.gis.db.models.fields.MultiPolygonField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'number': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'oid': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'perimetr': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'})
         },
         u'forestry.geopolygon': {

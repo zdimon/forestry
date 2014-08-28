@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Forestry.old_id'
-        db.add_column(u'forestry_forestry', 'old_id',
+        # Adding field 'TypePolygon.old_id'
+        db.add_column(u'forestry_typepolygon', 'old_id',
                       self.gf('django.db.models.fields.IntegerField')(default=0, db_index=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Forestry.old_id'
-        db.delete_column(u'forestry_forestry', 'old_id')
+        # Deleting field 'TypePolygon.old_id'
+        db.delete_column(u'forestry_typepolygon', 'old_id')
 
 
     models = {
@@ -27,6 +27,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mf': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '8', 'decimal_places': '2'}),
             'mx': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '8', 'decimal_places': '2'}),
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'reserve': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '8', 'decimal_places': '2'}),
             'ro': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '8', 'decimal_places': '2'}),
             'se': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '8', 'decimal_places': '2'}),
@@ -84,17 +85,17 @@ class Migration(SchemaMigration):
         },
         u'forestry.geokvartal': {
             'Meta': {'object_name': 'GeoKvartal'},
-            'area': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'}),
-            'area_count': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'}),
-            'center_lat': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '7'}),
-            'center_lon': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '7'}),
-            'center_zoom': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'area': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'area_count': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'}),
+            'center_lat': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '18', 'decimal_places': '7', 'blank': 'True'}),
+            'center_lon': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '18', 'decimal_places': '7', 'blank': 'True'}),
+            'center_zoom': ('django.db.models.fields.IntegerField', [], {'default': '0', 'blank': 'True'}),
             'forestry': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['forestry.Forestry']"}),
             'geom': ('django.contrib.gis.db.models.fields.MultiPolygonField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'number': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'oid': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'perimetr': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2'})
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
+            'perimetr': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '10', 'decimal_places': '2', 'blank': 'True'})
         },
         u'forestry.geopolygon': {
             'Meta': {'object_name': 'GeoPolygon'},
@@ -153,6 +154,7 @@ class Migration(SchemaMigration):
             'name_en': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'name_ru': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'name_uk': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'rothermel': ('django.db.models.fields.related.ForeignKey', [], {'default': 'False', 'to': u"orm['fires.Rothermel']", 'blank': 'True'})
         },
         u'forestry.typevalue': {

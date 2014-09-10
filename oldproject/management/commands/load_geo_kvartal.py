@@ -36,6 +36,7 @@ class Command(BaseCommand):
                 o.center_lon = oldf.center_lon
                 o.center_lat = oldf.center_lat
                 o.geom = oldf.geom
+                o.old_id=oldf.id
                 o.save()
             #nf = Forestry()
             #nf.name_ru = 'ssss'

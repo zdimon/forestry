@@ -84,6 +84,7 @@ class TypePolygon(models.Model):
 
 
 class GeoPolygon(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     type = models.ForeignKey(TypePolygon, verbose_name=_(u'Type of polygon'))
     kvartal = models.ForeignKey(GeoKvartal, verbose_name=_(u'Number of block'))
     forestry = models.ForeignKey(Forestry, verbose_name=_(u'The name of forestry'))

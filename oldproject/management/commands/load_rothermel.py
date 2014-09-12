@@ -13,28 +13,26 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-
 class Command(BaseCommand):
     ''' перенос лесничеств со старой базы в новую
     '''
 
     def handle(self, *args, **options):
-        from oldproject.models import ForestryGroup as Oldforestrygroup, ForestryGroupTranslation as oldtrans
-        from forestry.models import ForestryGroup
+        from oldproject.models import Rothermel as Oldrothermel, RothermelTranslation as oldtrans
+        from fires.models import Rothermel
         logger.info("Start transfering.....")
         logger.info("Clear table.....")
-        ForestryGroup.objects.all().delete()
-        for f in Oldforestrygroup.objects.all():
-            nf = ForestryGroup()
+        Rothermel.objects.all().delete()
+        for f in Oldrothermel.objects.all():
+            nf = Rothermel()
             nf.old_id=f.pk
-            for ft in oldtrans.objects.filter(forestry_group_id = f.pk):
+            for ft in oldtrans.objects.filter(rothermel_id = f.pk):
                 if ft.lang=='ru':
-                    nf.name_ru = ft.name
-                    nf.name = ft.name
+                    nf.veget_type_ru = ft.veget_type
+                    nf.veget_type = ft.veget_type
                 elif ft.lang=='en':
-                    nf.name_en = ft.name
+                    nf.veget_type_en = ft.veget_type
                 elif ft.lang=='uk':
-                    nf.name_uk = ft.name
+                    nf.veget_type_uk = ft.veget_type
                 nf.save()
         logger.info("Finish transfering.....")
-

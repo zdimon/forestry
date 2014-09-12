@@ -27,18 +27,51 @@ class Command(BaseCommand):
         GeoPolygon.objects.all().delete()
         for fg in Oldgeopolygon.objects.all():
             try:
-                ss = GeoKvartal.objects.get(old_id = fg.kvartal)
-            #    logger.info(ss.id)
+                kvartal = GeoKvartal.objects.get(old_id = fg.kvartal)
             except:
-                pass
+                kvartal = GeoKvartal.objects.get(old_id = 3)
+            try:
+                forestry = Forestry.objects.get(old_id=1)
+                type_polygon = TypePolygon.objects.get(old_id=fg.type_id)
+            #    logger.info(ss.id)
+                g = GeoPolygon()
+                g.kvartal = kvartal
+                g.forestry = forestry
+                g.type = type_polygon
+                g.geom = fg.geom
+                g.name = fg.name
+                g.area = fg.area
+                g.perimetr = fg.perimetr
+                g.full_date = fg.full_date
+                g.is_geom = fg.is_geom
+                g.vydel = fg.vydel
+                g.center_zoom = fg.center_zoom
+                g.center_lon = fg.center_lon
+                g.center_lat = fg.center_lat
+                g.fire_able = fg.fire_able
+                g.wood_volume_per_ha = fg.wood_volume_per_ha
+                g.class_damage = fg.class_damage
+                g.firedanger = fg.firedanger
+                g.influence_probabiliti = fg.influence_probabiliti
+                g.firerisk = fg.firerisk
+                g.class_risk = fg.class_risk
+                g.class_risk1 = fg.class_risk1
+                g.class_risk2 = fg.class_risk2
+                g.save()
+                print 'polygon created '+str(g.id)
+            except Exception, err:
+                print Exception, err
                 #import pdb; pdb.set_trace()
 
-            try:
-                f = Forestry.objects.get(old_id = fg.forestry)
-                logger.info(f.id)
-            except:
+
+
+
+            #try:
+            #    f = Forestry.objects.get(old_id = fg.forestry)
+            #    logger.info(f.id)
+            #except:
              #   pass
-                import pdb; pdb.set_trace()
+            #    import pdb; pdb.set_trace()
 
 
 

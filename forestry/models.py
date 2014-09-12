@@ -35,14 +35,14 @@ class Forestry(models.Model):
 class GeoKvartal(models.Model):
     old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     forestry = models.ForeignKey(Forestry, verbose_name=_(u'Forestry name'))
-    number = models.IntegerField(verbose_name=_(u'Block number'), default=0)
-    area = models.DecimalField(verbose_name=_(u'Square'), max_digits=10, decimal_places=2, default=0, blank=True)
-    area_count = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
-    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=10, decimal_places=2, default=0, blank=True)
-    center_zoom = models.IntegerField(default=0, blank=True)
-    center_lon = models.DecimalField(max_digits=18, decimal_places=7, default=0, blank=True)
-    center_lat = models.DecimalField(max_digits=18, decimal_places=7, default=0, blank=True)
-    geom = models.MultiPolygonField()
+    number = models.IntegerField(verbose_name=_(u'Block number'), null=True, blank=True)
+    area = models.DecimalField(verbose_name=_(u'Square'), max_digits=10, decimal_places=2, null=True, blank=True)
+    area_count = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=10, decimal_places=2, null=True, blank=True)
+    center_zoom = models.IntegerField( null=True, blank=True)
+    center_lon = models.DecimalField(max_digits=18, decimal_places=7, null=True, blank=True)
+    center_lat = models.DecimalField(max_digits=18, decimal_places=7, null=True, blank=True)
+    geom = models.MultiPolygonField(null=True, blank=True)
     def __unicode__(self):
         return str(self.number)
 
@@ -63,8 +63,7 @@ class TypePolygon(models.Model):
     fill_color = ColorPickerField(verbose_name=u'Filling color', blank=True, default= "#ff0000")
     border_color = ColorPickerField(verbose_name=u'Border color', blank=True, default= "#000000")
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     @property
     def fill_color_rect(self):
         if(self.fill_color):
@@ -88,26 +87,25 @@ class GeoPolygon(models.Model):
     type = models.ForeignKey(TypePolygon, verbose_name=_(u'Type of polygon'))
     kvartal = models.ForeignKey(GeoKvartal, verbose_name=_(u'Number of block'))
     forestry = models.ForeignKey(Forestry, verbose_name=_(u'The name of forestry'))
-    oid = models.IntegerField(default=0)
-    name = models.CharField(max_length=250, default=False)
-    area = models.DecimalField(verbose_name=_(u'Area'), max_digits=20, decimal_places=2, default=0)
-    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=20, decimal_places=2, default=0)
+    oid = models.IntegerField(default=0, null=True)
+    name = models.CharField(max_length=250, default=False, null=True)
+    area = models.DecimalField(verbose_name=_(u'Area'), max_digits=20, decimal_places=2, default=0, null=True)
+    perimetr = models.DecimalField(verbose_name=_(u'Perimeter'), max_digits=20, decimal_places=2, default=0, null=True)
     full_date = models.BooleanField(default=False)
     is_geom = models.BooleanField(default=False)
-    vydel = models.IntegerField(verbose_name=_(u'Number of region'), default=0)
-    kvartal = models.IntegerField(verbose_name=_(u'Number of block'), default=0)
-    center_zoom = models.IntegerField(default=0)
-    center_lon = models.DecimalField(max_digits=25, decimal_places=7, default=0)
-    center_lat = models.DecimalField(max_digits=25, decimal_places=7, default=0)
-    fire_able = models.IntegerField(default=0)
-    wood_volume_per_ha = models.DecimalField(verbose_name=_(u'The volume of woor per ha'), max_digits=12, decimal_places=2, default=0)
-    class_damage = models.IntegerField(verbose_name = (u'The class of damage'), default = 0)
-    firedanger = models.DecimalField(verbose_name=_(u'Fire danger'), max_digits=21, decimal_places=5, default=0)
-    influence_probabiliti = models.DecimalField(verbose_name=_(u'The probability of influence'), max_digits=12, decimal_places=2, default=0)
-    firerisk = models.DecimalField(verbose_name=_(u'Fire risk'), max_digits=7, decimal_places=2, default=0)
-    class_risk = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0)
-    class_risk1 = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0)
-    class_risk2 = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0)
+    vydel = models.IntegerField(verbose_name=_(u'Number of region'), default=0, null=True)
+    center_zoom = models.IntegerField(default=0, null=True)
+    center_lon = models.DecimalField(max_digits=25, decimal_places=7, default=0, null=True)
+    center_lat = models.DecimalField(max_digits=25, decimal_places=7, default=0, null=True)
+    fire_able = models.IntegerField(default=0, null=True)
+    wood_volume_per_ha = models.DecimalField(verbose_name=_(u'The volume of woor per ha'), max_digits=12, decimal_places=2, default=0, null=True)
+    class_damage = models.IntegerField(verbose_name = (u'The class of damage'), default = 0, null=True)
+    firedanger = models.DecimalField(verbose_name=_(u'Fire danger'), max_digits=21, decimal_places=5, default=0, null=True)
+    influence_probabiliti = models.DecimalField(verbose_name=_(u'The probability of influence'), max_digits=12, decimal_places=2, default=0, null=True)
+    firerisk = models.DecimalField(verbose_name=_(u'Fire risk'), max_digits=7, decimal_places=2, default=0, null=True)
+    class_risk = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0, null=True)
+    class_risk1 = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0, null=True)
+    class_risk2 = models.IntegerField(verbose_name = (u'The class of fire risk'), default = 0, null=True)
     geom = models.MultiPolygonField('Country Border',srid=900913)
   #  objects = models.GeoManager()
     def __unicode__(self):
@@ -123,8 +121,7 @@ class ForestElement(models.Model):
     code = models.CharField(verbose_name=_(u'Code'), max_length=5,default=False)
     geo_polygons = models.ManyToManyField(GeoPolygon, through="ForestElement2GeoPolygon")
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return  self.name
     class Meta:
         verbose_name=_(u'Forest element')
         verbose_name_plural=_(u'Forest elements')

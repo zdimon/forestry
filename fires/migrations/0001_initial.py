@@ -8,7 +8,173 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        pass
+        # Adding model 'Rothermel'
+        db.create_table(u'fires_rothermel', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('veget_type_id', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('veget_type', self.gf('django.db.models.fields.CharField')(default=False, max_length=250)),
+            ('veget_type_en', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('veget_type_ru', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('veget_type_uk', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('reserve', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('unit_area', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('depth', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('h', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('ro', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('mf', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('st', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('se', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('u', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('tg', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+            ('mx', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=8, decimal_places=2)),
+        ))
+        db.send_create_signal(u'fires', ['Rothermel'])
+
+        # Adding model 'FireDetection'
+        db.create_table(u'fires_firedetection', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=250)),
+            ('name_en', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
+            ('name_ru', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
+            ('name_uk', self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['FireDetection'])
+
+        # Adding model 'FireCause'
+        db.create_table(u'fires_firecause', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(default=False, max_length=250)),
+            ('name_en', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_ru', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_uk', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['FireCause'])
+
+        # Adding model 'ExtingCosts'
+        db.create_table(u'fires_extingcosts', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(default=False, max_length=250)),
+            ('name_en', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_ru', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_uk', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['ExtingCosts'])
+
+        # Adding model 'FireDamage'
+        db.create_table(u'fires_firedamage', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(default=False, max_length=250)),
+            ('name_en', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_ru', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_uk', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['FireDamage'])
+
+        # Adding model 'FireWorked'
+        db.create_table(u'fires_fireworked', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(default=False, max_length=250)),
+            ('name_en', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_ru', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+            ('name_uk', self.gf('django.db.models.fields.CharField')(default=False, max_length=250, null=True, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['FireWorked'])
+
+        # Adding model 'Fires'
+        db.create_table(u'fires_fires', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('fire_detection', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.FireDetection'])),
+            ('forestry', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['forestry.Forestry'], null=True, db_column='forestry_id')),
+            ('fire_cause', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.FireCause'])),
+            ('date_begin', self.gf('django.db.models.fields.DateTimeField')(default=False)),
+            ('date_end', self.gf('django.db.models.fields.DateTimeField')(default=False)),
+            ('exting_begin', self.gf('django.db.models.fields.DateTimeField')(default=False)),
+            ('exting_end', self.gf('django.db.models.fields.DateTimeField')(default=False)),
+            ('square', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('crowning_square', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('ground_square', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('unforest_square', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('date_month', self.gf('django.db.models.fields.IntegerField')(default=0)),
+        ))
+        db.send_create_signal(u'fires', ['Fires'])
+
+        # Adding model 'Fires2ExtingCosts'
+        db.create_table(u'fires_fires2extingcosts', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('fire', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.Fires'])),
+            ('exting_costs', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.ExtingCosts'])),
+            ('sum', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=10, decimal_places=2)),
+        ))
+        db.send_create_signal(u'fires', ['Fires2ExtingCosts'])
+
+        # Adding model 'Fires2FireDamage'
+        db.create_table(u'fires_fires2firedamage', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('fire', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.Fires'])),
+            ('fire_damage', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.FireDamage'])),
+            ('sum', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=10, decimal_places=2)),
+        ))
+        db.send_create_signal(u'fires', ['Fires2FireDamage'])
+
+        # Adding model 'Fires2FireWorked'
+        db.create_table(u'fires_fires2fireworked', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('fire', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.Fires'])),
+            ('fire_worked', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.FireWorked'])),
+            ('num', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+        ))
+        db.send_create_signal(u'fires', ['Fires2FireWorked'])
+
+        # Adding model 'Fires2GeoPolygon'
+        db.create_table(u'fires_fires2geopolygon', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('fire', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['fires.Fires'])),
+            ('geo_polygon', self.gf('django.db.models.fields.related.ForeignKey')(default=False, to=orm['forestry.GeoPolygon'])),
+            ('kvartal', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('vydel', self.gf('django.db.models.fields.IntegerField')(default=0)),
+        ))
+        db.send_create_signal(u'fires', ['Fires2GeoPolygon'])
+
+        # Adding model 'Meteocondition'
+        db.create_table(u'fires_meteocondition', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('curdate', self.gf('django.db.models.fields.DateField')()),
+            ('t', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('p0', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2, blank=True)),
+            ('p', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('pa', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('u', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('dd', self.gf('django.db.models.fields.CharField')(max_length=150, blank=True)),
+            ('ff', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('ff10', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('ff3', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('n', self.gf('django.db.models.fields.CharField')(max_length=150, blank=True)),
+            ('ww', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('w1', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('w2', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('tn', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('tx', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('cl', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('nh', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
+            ('h', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
+            ('cm', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('ch', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('w', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('r', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('rrr', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('tr', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('e', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('tg', self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2, blank=True)),
+            ('es', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
+            ('sss', self.gf('django.db.models.fields.IntegerField')(blank=True)),
+            ('rain', self.gf('django.db.models.fields.BooleanField')()),
+            ('kmp', self.gf('django.db.models.fields.DecimalField')(max_digits=20, decimal_places=10, blank=True)),
+            ('pjc', self.gf('django.db.models.fields.DecimalField')(max_digits=20, decimal_places=10, blank=True)),
+            ('ap', self.gf('django.db.models.fields.DecimalField')(max_digits=20, decimal_places=10, blank=True)),
+            ('pm', self.gf('django.db.models.fields.DecimalField')(max_digits=20, decimal_places=10, blank=True)),
+            ('pr', self.gf('django.db.models.fields.DecimalField')(max_digits=20, decimal_places=10, blank=True)),
+        ))
+        db.send_create_signal(u'fires', ['Meteocondition'])
 
 
     def backwards(self, orm):
@@ -235,6 +401,7 @@ class Migration(SchemaMigration):
             'kvartal': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'name': ('django.db.models.fields.CharField', [], {'default': 'False', 'max_length': '250'}),
             'oid': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'}),
             'perimetr': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '20', 'decimal_places': '2'}),
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['forestry.TypePolygon']"}),
             'vydel': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -250,7 +417,7 @@ class Migration(SchemaMigration):
             'name_en': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'name_ru': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'name_uk': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
-            'rothermel': ('django.db.models.fields.related.ForeignKey', [], {'default': 'False', 'to': u"orm['fires.Rothermel']", 'blank': 'True'})
+            'old_id': ('django.db.models.fields.IntegerField', [], {'default': '0', 'db_index': 'True'})
         }
     }
 

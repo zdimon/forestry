@@ -17,31 +17,25 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        from oldproject.models import ForestElement as Oldforestelement
-        from oldproject.models import ForestElementTranslation as Oldforestelementtranslation
-        from forestry.models import ForestElement, TypePolygon
+        from oldproject.models import ForestElement2GeoPolygon as Oldforestelement2gp
+        from forestry.models import ForestElement2GeoPolygon, GeoPolygon, ForestElement
         logger.info("Start transfering.....")
         logger.info("Clear table.....")
-        ForestElement.objects.all().delete()
-        for fg in Oldforestelement.objects.all():
+        ForestElement2GeoPolygon.objects.all().delete()
+        for fg in Oldforestelement2gp.objects.all():
             print fg.id
                            #forestry = Forestry.objects.get(old_id=1)
-            type_polygon = TypePolygon.objects.get(old_id=fg.type_polygon_id)
+            geo_polygon = GeoPolygon.objects.get(old_id=fg.geo_polygon_id)
+            forest_element = ForestElement.objects.get(old_id=fg.forest_element_id)
             #    logger.info(ss.id)
-            g = ForestElement()
-            g.code = fg.code
-            g.rothermel_id = 1
-            g.type_polygon = type_polygon
-            g.old_id = fg.id
-            for ot in Oldforestelementtranslation.objects.filter(forest_element=fg):
-                print 'qq1'
-                if ot.lang=='ru':
-                    g.name=ot.name
-                    g.name_ru=ot.name
-                if ot.lang=='en':
-                    g.name_en = ot.name
-                if ot.lang=='uk':
-                    g.name_uk = ot.name
+            g = ForestElement2GeoPolygon()
+            g.geo_polygon = geo_polygon
+            g.forest_element = forest_element
+            g.age = fg.age
+            g.height = fg.height
+            g.diameter = fg.diameter
+            g.wood_store = fg.wood_store
+            g.percent = fg.percent
             g.save()
                 #print 'polygon created '+str(g.id)
             #except Exception, err:

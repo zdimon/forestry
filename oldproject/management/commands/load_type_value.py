@@ -24,6 +24,7 @@ class Command(BaseCommand):
         TypeValue.objects.all().delete()
         for fg in Oldtype.objects.all():
             o = TypeValue()
+            o.old_id = fg.id
             o.name = fg.name
             o.save()
         logger.info("Finish transfering.....")

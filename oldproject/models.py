@@ -12,20 +12,20 @@ from __future__ import unicode_literals
 from django.contrib.gis.db import models
 
 class Forestelement(models.Model):
-    
+    type_polygon = models.ForeignKey('TypePolygon')
+    rothermel = models.ForeignKey('Rothermel')
+    code = models.CharField(max_length=5)
     class Meta:
         managed = False
-        db_table = 'ForestElement'
+        db_table = 'forest_element'
 
 class Forestelementtranslation(models.Model):
-    
-    forestelement = models.ForeignKey(Forestelement, db_column='ForestElement_id') # Field name made lowercase.
-    type_polygon = models.ForeignKey('TypePolygon')
-    code = models.CharField(max_length=5)
+    forest_element = models.ForeignKey(Forestelement) # Field name made lowercase.
     name = models.CharField(max_length=250)
+    lang = models.CharField(max_length=250)
     class Meta:
         managed = False
-        db_table = 'ForestElementTranslation'
+        db_table = 'forest_element_translation'
 
 class Rothermel(models.Model):
     

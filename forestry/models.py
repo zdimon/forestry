@@ -128,6 +128,7 @@ class ForestElement(models.Model):
         verbose_name_plural=_(u'Forest elements')
 
 class ForestElement2GeoPolygon(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     geo_polygon = models.ForeignKey(GeoPolygon, verbose_name=_(u'Region'), default=False)
     forest_element = models.ForeignKey(ForestElement, verbose_name=_(u'Forest element'), default=False)
     age = models.IntegerField(verbose_name=_(u'Age'), default=0)
@@ -148,6 +149,7 @@ class ForestElement2GeoPolygon(models.Model):
 
 #Types of parameters (select input)
 class TypeValue(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Type of value (select, input)'), max_length=250)
     def __unicode__(self):
         return self.name

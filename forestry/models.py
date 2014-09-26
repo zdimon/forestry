@@ -129,13 +129,13 @@ class ForestElement(models.Model):
 
 class ForestElement2GeoPolygon(models.Model):
     old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
-    geo_polygon = models.ForeignKey(GeoPolygon, verbose_name=_(u'Region'), default=False)
-    forest_element = models.ForeignKey(ForestElement, verbose_name=_(u'Forest element'), default=False)
-    age = models.IntegerField(verbose_name=_(u'Age'), default=0)
-    height = models.DecimalField(verbose_name=_(u'Height'), max_digits=5, decimal_places=2, default=0)
-    diameter = models.DecimalField(verbose_name=_(u'Diameter'), max_digits=5, decimal_places=2, default=0)
-    wood_store = models.DecimalField(verbose_name=_(u'The volume of wood'), max_digits=5, decimal_places=2, default=0)
-    percent = models.IntegerField(verbose_name=_(u'Percentage of business trees'), default=0)
+    geo_polygon = models.ForeignKey(GeoPolygon, verbose_name=_(u'Region'), default=False, blank=True, null=True)
+    forest_element = models.ForeignKey(ForestElement, verbose_name=_(u'Forest element'), default=False, blank=True, null=True)
+    age = models.IntegerField(verbose_name=_(u'Age'), default=0, blank=True, null=True)
+    height = models.DecimalField(verbose_name=_(u'Height'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    diameter = models.DecimalField(verbose_name=_(u'Diameter'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    wood_store = models.DecimalField(verbose_name=_(u'The volume of wood'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    percent = models.IntegerField(verbose_name=_(u'Percentage of business trees'), default=0, blank=True, null=True)
     def __unicode__(self):
         return unicode(self.geo_polygon) + u'  ' + unicode(self.forest_element) or u''
     class Meta:
@@ -159,10 +159,11 @@ class TypeValue(models.Model):
 
 
 class TypeParamPolygon(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     type_reg = models.ForeignKey(TypePolygon, verbose_name=_(u'Type of region'), default=False)
     type_value = models.ForeignKey(TypeValue, verbose_name=_(u'Type of parameter value'), null=True, default=False)
     name = models.CharField(verbose_name=_(u'Name of parameter'), max_length=250,default=False)
-    value = models.CharField(verbose_name=_(u'Value'), max_length=100, default=False)
+    value = models.CharField(verbose_name=_(u'Value'), max_length=250, default=0, blank=True, null=True)
     def __unicode__(self):
         return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
             	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
@@ -187,7 +188,7 @@ class ValueParamPolygon(models.Model):
     type_reg = models.ForeignKey(TypePolygon,verbose_name=_(u'Type of region'),  default=False)
     region = models.ForeignKey(GeoPolygon,verbose_name=_(u'Region'),  default=False)
     type_param = models.ForeignKey(TypeParamPolygon,verbose_name=_(u'Parameter'),  default=False)
-    value = models.CharField(verbose_name=_(u'Parameter value'), max_length=100)
+    value = models.CharField(verbose_name=_(u'Parameter value'), max_length=250, blank=True, null=True, default=False)
     def __unicode__(self):
         return unicode(self.region) + u'  ' + unicode(self.type_param)+ u'  -  ' +unicode(self.value) or u''
     class Meta:

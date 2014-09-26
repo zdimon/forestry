@@ -57,6 +57,7 @@ class Command(BaseCommand):
                 g.class_risk = fg.class_risk
                 g.class_risk1 = fg.class_risk1
                 g.class_risk2 = fg.class_risk2
+                g.old_id = fg.id
                 g.save()
                 print 'polygon created '+str(g.id)
             except Exception, err:

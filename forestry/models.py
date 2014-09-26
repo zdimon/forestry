@@ -115,6 +115,7 @@ class GeoPolygon(models.Model):
         verbose_name_plural=_(u'Regions')
 
 class ForestElement(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     type_polygon = models.ForeignKey(TypePolygon, verbose_name=_(u'The type of region'))
     rothermel = models.ForeignKey(Rothermel, blank=True, default=False)
     name = models.CharField(verbose_name=_(u'Name'), max_length=250,default=False)

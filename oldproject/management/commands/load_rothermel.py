@@ -23,16 +23,14 @@ class Command(BaseCommand):
         logger.info("Start transfering.....")
         logger.info("Clear table.....")
         Rothermel.objects.all().delete()
-        for f in Oldrothermel.objects.all():
-            nf = Rothermel()
-            nf.old_id=f.pk
-            for ft in oldtrans.objects.filter(rothermel_id = f.pk):
-                if ft.lang=='ru':
-                    nf.veget_type_ru = ft.veget_type
-                    nf.veget_type = ft.veget_type
-                elif ft.lang=='en':
-                    nf.veget_type_en = ft.veget_type
-                elif ft.lang=='uk':
-                    nf.veget_type_uk = ft.veget_type
-                nf.save()
+        nf = Rothermel()
+        nf.veget_type_id = 1
+        nf.veget_type = 'aa'
+        nf.veget_type_en = 'aa'
+        nf.veget_type_ru = 'aa'
+        nf.veget_type_uk = 'aa'
+        nf.reserve = 12.1
+        nf.unit_area = 11.2
+
+        nf.save()
         logger.info("Finish transfering.....")

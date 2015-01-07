@@ -78,6 +78,10 @@ admin.site.register(Fires2FireWorked, Fires2FireWorkedAdmin)
 
 class Fires2GeoPolygonAdmin(admin.ModelAdmin):
     list_display = ('fire', 'geo_polygon', 'kvartal', 'vydel',)
+
+
+
+
     fieldsets = [
         (u'Fires2GeoPolygons', {'fields': ('fire', 'geo_polygon', 'kvartal', 'vydel',)})
     ]

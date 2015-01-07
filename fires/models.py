@@ -28,14 +28,14 @@ class Rothermel(models.Model):
     tg = models.DecimalField(verbose_name=_(u'The slope of the terrain (tangent)'), max_digits=8, decimal_places=2, default=0)
     mx = models.DecimalField(verbose_name=_(u'Critical moisture content'), max_digits=8, decimal_places=2, default=0)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Parameters of Rothermel model')
         verbose_name_plural=_(u'Parameters of Rothermel model')
 
 
 class FireDetection(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Who detected fire'), max_length=250)
     def __unicode__(self):
         return self.name
@@ -45,59 +45,61 @@ class FireDetection(models.Model):
 
 
 class FireCause(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Fire cause'), max_length=250,default=False)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Fire cause')
         verbose_name_plural=_(u'Fire causes')
 
 
 class ExtingCosts(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Type of extinguishing costs'), max_length=250,default=False)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Types of extinguishing costs')
         verbose_name_plural=_(u'Types of extinguishing costs')
 
 
 class FireDamage(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Fire damage'), max_length=250,default=False)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Fire damage')
         verbose_name_plural=_(u'Fire damage')
 
 
 class FireWorked(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     name = models.CharField(verbose_name=_(u'Worked on fire'), max_length=250,default=False)
     def __unicode__(self):
-        return getattr(translation_pool.annotate_with_translations(self), 'translations', []) \
-            	and unicode(translation_pool.annotate_with_translations(self).translations[0]) or u'No translations'
+        return self.name
     class Meta:
         verbose_name=_(u'Worked on fire')
         verbose_name_plural=_(u'Worked on fire')
 
 
 class Fires(models.Model):
-    from forestry.models import Forestry
-    fire_detection = models.ForeignKey(FireDetection, verbose_name=_(u'Who detected'), default=False)
-    forestry = models.ForeignKey(Forestry, verbose_name=_(u'Forestry'), null=True, db_column='forestry_id', default=False)
-    fire_cause = models.ForeignKey(FireCause, verbose_name=_(u'Firecause'), default=False)
-    date_begin = models.DateTimeField(verbose_name=_(u'Data and time of fire beginning'), default=False)
-    date_end = models.DateTimeField(verbose_name=_(u'Date and time of fire ending'), default=False)
-    exting_begin = models.DateTimeField(verbose_name=_(u'Date and time of beginning of extinguishing'), default=False)
-    exting_end = models.DateTimeField(verbose_name=_(u'Date and time of the ending of extinguishing'), default=False)
-    square = models.DecimalField(verbose_name=_(u'Total burnt area'), max_digits=5, decimal_places=2, default=0)
-    crowning_square = models.DecimalField(verbose_name=_(u'The area of crown fire'), max_digits=5, decimal_places=2, default=0)
-    ground_square = models.DecimalField(verbose_name=_(u'The area of ground fire'), max_digits=5, decimal_places=2, default=0)
-    unforest_square = models.DecimalField(verbose_name=_(u'Non forest area'), max_digits=5, decimal_places=2, default=0)
-    date_month = models.IntegerField(verbose_name=_(u'The day of month'), default=0)
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
+    from forestry.models import Forestry, ForestryGroup
+    fire_detection = models.ForeignKey(FireDetection, verbose_name=_(u'Who detected'), default=False, blank=True, null=True)
+    forestry_group = models.ForeignKey(ForestryGroup, verbose_name=_(u'Forestry group'), db_column='forestry_group_id', default=1)
+    forestry = models.ForeignKey(Forestry, verbose_name=_(u'Forestry'), db_column='forestry_id', default=False, blank=True, null=True)
+    fire_cause = models.ForeignKey(FireCause, verbose_name=_(u'Firecause'), default=False, blank=True, null=True)
+    date_begin = models.DateTimeField(verbose_name=_(u'Data and time of fire beginning'), default=False, blank=True, null=True)
+    date_end = models.DateTimeField(verbose_name=_(u'Date and time of fire ending'), default=False, blank=True, null=True)
+    exting_begin = models.DateTimeField(verbose_name=_(u'Date and time of beginning of extinguishing'), default=False, blank=True, null=True)
+    exting_end = models.DateTimeField(verbose_name=_(u'Date and time of the ending of extinguishing'), default=False, blank=True, null=True)
+    square = models.DecimalField(verbose_name=_(u'Total burnt area'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    crowning_square = models.DecimalField(verbose_name=_(u'The area of crown fire'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    ground_square = models.DecimalField(verbose_name=_(u'The area of ground fire'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    unforest_square = models.DecimalField(verbose_name=_(u'Non forest area'), max_digits=5, decimal_places=2, default=0, blank=True, null=True)
+    date_month = models.IntegerField(verbose_name=_(u'The day of month'), default=0, blank=True, null=True)
     def __unicode__(self):
         return unicode(self.date_begin) + u'  ' + unicode(self.forestry_id) or u''
     class Meta:
@@ -107,15 +109,17 @@ class Fires(models.Model):
 
 
 class Fires2ExtingCosts(models.Model):
-    fire = models.ForeignKey('Fires', verbose_name=_(u'Fire'), default=False)
-    exting_costs = models.ForeignKey('ExtingCosts', verbose_name=_(u'Extinguishing costs'), default=False)
-    sum = models.DecimalField(verbose_name=_(u'The amount of costs'), max_digits=10, decimal_places=2, default=0)
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
+    fire = models.ForeignKey('Fires', verbose_name=_(u'Fire'), default=False, blank=True, null=True)
+    exting_costs = models.ForeignKey('ExtingCosts', verbose_name=_(u'Extinguishing costs'), default=False, blank=True, null=True)
+    sum = models.DecimalField(verbose_name=_(u'The amount of costs'), max_digits=10, decimal_places=2, default=0, blank=True, null=True)
     def __unicode__(self):
         return unicode(self.fire) + u':  ' + unicode(self.exting_costs) + u' - ' + unicode(self.sum) or u''
 
 
 
 class Fires2FireDamage(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     fire = models.ForeignKey('Fires', verbose_name=_(u'Fire'), default=False)
     fire_damage = models.ForeignKey('FireDamage', verbose_name=_(u'Fire damage'), default=False)
     sum = models.DecimalField(verbose_name=_(u'The amount of damage'), max_digits=10, decimal_places=2, default=0)
@@ -125,6 +129,7 @@ class Fires2FireDamage(models.Model):
 
 
 class Fires2FireWorked(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     fire = models.ForeignKey('Fires', verbose_name=_(u'Fire'), default=False)
     fire_worked = models.ForeignKey('FireWorked', verbose_name=_(u'Worked on fire'), default=False)
     num = models.DecimalField(verbose_name=_(u'The amount'), max_digits=5, decimal_places=2, default=0)
@@ -134,6 +139,7 @@ class Fires2FireWorked(models.Model):
 
 
 class Fires2GeoPolygon(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     from forestry.models import GeoPolygon
     fire = models.ForeignKey('Fires', default=False)
     geo_polygon = models.ForeignKey(GeoPolygon, default=False)
@@ -146,6 +152,7 @@ class Fires2GeoPolygon(models.Model):
 
 
 class Meteocondition(models.Model):
+    old_id = models.IntegerField(verbose_name=_(u'Old id'), default=0, db_index=True)
     curdate = models.DateField(verbose_name=_(u'Date'))
     t = models.DecimalField(verbose_name=_(u'Temperature'), max_digits=5, decimal_places=2, default=0)
     p0 = models.DecimalField(verbose_name=_(u'Atmospheric pressure at the level of station (mm))'), max_digits=5, decimal_places=2, default=0, blank = True)

@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from local import *
 import os
+
+import warnings
+warnings.filterwarnings('error',
+                        r"DateTimeField .* received a naive datetime",
+                        RuntimeWarning, r'django\.db\.models\.fields')
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 GOOGLE_MAPS_API_KEY='abcdefg'
 
@@ -27,6 +33,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+USE_TZ = False
 
 # Application definition
 
@@ -100,7 +107,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

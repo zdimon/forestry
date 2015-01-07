@@ -9,3 +9,14 @@
 ./manage.py load_forest_element2_geo_polygon
 ./manage.py load_type_param_polygon
 ./manage.py load_value_param_polygon
+./manage.py load_fire_detection
+./manage.py load_fire_cause
+./manage.py load_exting_costs
+./manage.py load_fire_damage
+./manage.py load_fire_worked
+./manage.py load_fires
+./manage.py load_fires2_exting_costs
+./manage.py load_fires2_fire_damage
+./manage.py load_fires2_fire_worked
+
+./manage.py load_meteocondition

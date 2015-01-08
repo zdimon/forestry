@@ -9,14 +9,50 @@ from django.contrib.gis import admin
 from django.contrib.gis.admin import OSMGeoAdmin, GeoModelAdmin
 from django.conf import settings
 
+from django.conf.urls import patterns, url
+from django.http import HttpResponse
+
 import django_databrowse
 django_databrowse.site.register(GeoKvartal)
 
 USE_GOOGLE_TERRAIN_TILES = False
 
+from django.shortcuts import render_to_response
+from djgeojson.views import GeoJSONLayerView
+
+
+class MapLayer(GeoJSONLayerView):
+    # Options
+    precision = 4   # float
+    simplify = 0.5  # generalization
+
+
+def my_view(request):
+    base_url = request.build_absolute_uri('/')[:-1]
+    return render_to_response('admin/map.html', {'user': request.user, 'base_url': base_url})
+    
+def get_kvartal_info(request):    
+    pass
+    
+def get_kvartal(request):    
+    pass    
+    
+def get_admin_urls(urls):
+    def get_urls():
+        my_urls = patterns('',
+            url(r'^map/$', admin.site.admin_view(my_view)),
+            url(r'^get-kvartal-info/$', admin.site.admin_view(get_kvartal_info), name="get-kvartal-info"),
+            url(r'^get-kvartal/$', MapLayer.as_view(model=GeoKvartal,properties=('number','id')), name='mushrooms'),
+        )
+        return my_urls + urls
+    return get_urls
+
+admin_urls = get_admin_urls(admin.site.get_urls())
+admin.site.get_urls = admin_urls    
 
 class ForestryAdmin(TranslationAdmin):
     pass
+    
 admin.site.register(Forestry, ForestryAdmin)
 
 

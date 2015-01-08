@@ -1,0 +1,9 @@
+{% extends "admin/index.html" %} 
+{% load i18n %}
+{% block branding %}
+    <a href="{% url 'admin:index' %}" class="brand" id="site-name">{% trans 'Fire Fighting System' %}</a>
+    <a class="btn btn-primary" href="/admin/map/"><span class="icon-pencil"></span>&nbsp;{% trans 'Кварталы' %}</a> 
+{% endblock %}
+
+
+

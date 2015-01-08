@@ -7,3 +7,5 @@ simple-translation==0.8.6
 django-databrowse==1.2
 django-wsgiserver
 bootstrap-admin==0.3.0
+django-durationfield
+django-geojson

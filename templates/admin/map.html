@@ -1,0 +1,158 @@
+{% extends "admin/custom_index.html" %} 
+
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+ <h2> Карта </h2>
+ <div style="width:800px; height:700px; border: 2px solid silver" id="map_block"></div>
+ 
+ 
+ 
+ 
+  <script type="text/javascript">
+        function init(){
+                var lon = 3665941.92388;
+                var lat = 5880439.46213;
+            var zoom = 12;
+            var options = {
+                div: "map_block",
+                layers: [new OpenLayers.Layer.OSM()],
+                projection: new OpenLayers.Projection("EPSG:4326"),
+                 maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+            };
+            var  map = new OpenLayers.Map(options);
+
+            var style = new OpenLayers.Style({fillColor : "green",
+                                          label: '${number}',
+                                          fillOpacity : 0.4});
+
+
+            var stylemap =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .7,
+                        strokeWidth: 1,
+                        fillColor: "green",
+                        fillOpacity: .7,
+                        label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ffff33",
+                        strokeOpacity: .9,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: .3,
+                        label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+                        label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+
+
+            geodetdom = new OpenLayers.Layer.Vector("Кварталы", {
+                projection: new OpenLayers.Projection('EPSG:4326'),
+                strategies: [new OpenLayers.Strategy.Fixed()],
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "{{ base_url }}/admin/get-kvartal",
+                    params: {
+                        attrs: 'id,name',
+                        epsg: '900913'
+                    },
+                    format: new OpenLayers.Format.GeoJSON()
+
+                }),
+                styleMap: stylemap
+            });
+            json = new OpenLayers.Format.GeoJSON();
+            features = json.read();
+            map.addLayer(geodetdom);
+
+                  //  var proj = new OpenLayers.Projection("EPSG:900913");
+                var point = new OpenLayers.LonLat(lon, lat);
+                map.setCenter(point, zoom);
+
+            function setHTML(response) {
+            OpenLayers.Util.getElement('info').innerHTML = response.responseText;
+            $('#status-message').hide();
+            }
+
+               function delselected() {
+                   //alert(geodetdom.selectedFeatures.length)
+               }
+
+
+          var report = function(e) {
+                OpenLayers.Console.log(e.type, e.feature.id);
+            };
+
+        function updateinfo() {
+
+            if (geodetdom.selectedFeatures.length == 1) {
+            $('#status-message').show();
+            var feature = geodetdom.selectedFeatures[0].clone();
+             OpenLayers.Console.log(geodetdom.selectedFeatures.length);
+
+             feature.style = {strokeColor:"#ff0000", fillColor: "#ff0000", fillOpacity: "0.4"};
+            // geodetdom.drawFeature(feature);
+
+            str = geodetdom.selectedFeatures[0].data['number'];
+
+           var request = OpenLayers.Request.GET({
+                url: "{{ base_url }}get-kvartal-info",
+                params: {id: geodetdom.selectedFeatures[0].data['id']},
+                callback: setHTML
+
+            });
+
+
+            } else {document.getElementById('info').value = ''}
+        }
+
+
+          var select_options = {
+            hover: false,
+            onSelect: updateinfo,
+            onUnselect: delselected,
+          };
+
+
+            var highlightCtrl = new OpenLayers.Control.SelectFeature(geodetdom, {
+                hover: true,
+                highlightOnly: true,
+                renderIntent: "temporary"
+            });
+
+         var select = new OpenLayers.Control.SelectFeature(geodetdom, select_options);
+
+         map.addControl(highlightCtrl);
+         map.addControl(select);
+
+         highlightCtrl.activate();
+         select.activate();
+
+
+           // map.zoomToExtent([3062373.1007906, 8962088.6911328, 18560133.457509, 9930698.7134278]);
+        };
+        $(document).ready(function(){ init() });
+
+        </script>
+ 
+ 
+ 
+ 
+{% endblock %}

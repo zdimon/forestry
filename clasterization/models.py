@@ -10,8 +10,8 @@ from django.db import models
 
 from durationfield.db.models.fields.duration import DurationField
 
-#from datetime import timedelta
-import timedelta
+from datetime import timedelta
+#import timedelta
 
 from django.utils.translation import ugettext as _
 from django.db.models.signals import post_save, pre_save

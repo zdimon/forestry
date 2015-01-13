@@ -1,0 +1,1 @@
+{"crs": {"type": "link", "properties": {"href": "http://spatialreference.org/ref/epsg/4326/", "type": "proj4"}}, "type": "FeatureCollection", "features": [{"geometry": null, "type": "Feature", "properties": {"model": "forestry.geopolygon", "id": 7859}, "id": 7859}, {"geometry": null, "type": "Feature", "properties": {"model": "forestry.geopolygon", "id": 9262}, "id": 9262}]}

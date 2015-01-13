@@ -1,0 +1,56 @@
+
+<div class="well panel panel-primary">
+<div class="panel-heading">
+    <h3 class="panel-title">Section № {{ region.kvartal }}</h3>
+    <h3 class="panel-title">Region № {{ region.vydel }}</h3>
+  </div>
+  <div class="panel-body">
+     <table>
+
+         <tr>
+             <td>The type of terrain</td>
+             <td><b>{{ region.type }}</b></td>
+         </tr>
+         {% if region.area != None %}
+         <tr>
+             <td>Area (square metre)</td>
+             <td><b>{{ region.area }}</b></td>
+         </tr>
+         {% endif %}
+         {% if region.area != None %}
+         <tr>
+             <td>Perimeter (m)</td>
+             <td><b>{{ region.perimetr }}</b></td>
+         </tr>
+         {% endif %}
+
+
+
+         {% for i in fe %}
+          <tr>
+              <th><b><i>{{ i.forest_element }}</i></b></th>
+          </tr>
+         {% if i.age != None %}
+          <tr>
+              <td>Age (years)</td>
+              <td>{{ i.age }}</td>
+          </tr>
+         {% endif %}
+         {% if i.height != None %}
+         <tr>
+              <td>Height (m)</td>
+              <td>{{ i.height }}</td>
+          </tr>
+         {% endif %}
+         {% if i.diameter != None %}
+         <tr>
+              <td>Diameter of trunk (sm)</td>
+              <td>{{ i.diameter }}</td>
+          </tr>
+         {% endif %}
+         {% endfor %}
+
+     </table>
+     <a class="btn btn-primary" href="{{ base_url }}/forestry/geopolygon/{{ region.id }}/" target="_blank">Edit</a>
+  </div>
+</div>

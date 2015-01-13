@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block content %}
- <h2> Карта </h2>
- <div style="width:800px; height:700px; border: 2px solid silver" id="map_block"></div>
+ <h2> Sections </h2>
+ <div class="well" style="width:800px; height:700px; border: 2px solid silver" id="map_block"></div>
  
  
  
@@ -78,6 +78,9 @@
                 }),
                 styleMap: stylemap
             });
+
+
+
             json = new OpenLayers.Format.GeoJSON();
             features = json.read();
             map.addLayer(geodetdom);
@@ -85,6 +88,10 @@
                   //  var proj = new OpenLayers.Projection("EPSG:900913");
                 var point = new OpenLayers.LonLat(lon, lat);
                 map.setCenter(point, zoom);
+
+
+
+
 
             function setHTML(response) {
             OpenLayers.Util.getElement('info').innerHTML = response.responseText;

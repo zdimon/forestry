@@ -8,6 +8,7 @@ from modeltranslation.admin import TranslationAdmin
 from django.contrib.gis import admin
 from django.contrib.gis.admin import OSMGeoAdmin, GeoModelAdmin
 from django.conf import settings
+from django.template import RequestContext
 
 from django.conf.urls import patterns, url
 from django.http import HttpResponse
@@ -19,7 +20,9 @@ USE_GOOGLE_TERRAIN_TILES = False
 
 from django.shortcuts import render_to_response
 from djgeojson.views import GeoJSONLayerView
-
+from map.views import  mapregion
+from django.conf import settings
+from djgeojson.serializers import Serializer as GeoJSONSerializer
 
 class MapLayer(GeoJSONLayerView):
     # Options
@@ -27,28 +30,138 @@ class MapLayer(GeoJSONLayerView):
     simplify = 0.5  # generalization
 
 
-def my_view(request):
+
+
+class GetPolygonJsonFirerisk(GeoJSONLayerView):
+    # Options
+    from config.settings import BASE_DIR
+    precision = 4   # float
+    simplify = 0.5  # generalization
+    def get_queryset(self):
+        return GeoPolygon.objects.all()
+
+    def render_to_response(self, context, **response_kwargs):
+        from config.settings import BASE_DIR
+        import os.path
+        cpath = BASE_DIR+'/map_cache/firerisk.txt'
+        if(os.path.exists(cpath)):
+            from django.http import HttpResponse
+            f = open(cpath,'r')
+            out = f.read()
+            f.close()
+            return HttpResponse(out, content_type="application/json")
+
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        serializer = GeoJSONSerializer()
+        response = self.response_class(**response_kwargs)
+        options = dict(properties=self.properties,
+                       precision=self.precision,
+                       simplify=self.simplify,
+                       srid=self.srid,
+                       geometry_field=self.geometry_field,
+                       force2d=self.force2d)
+        serializer.serialize(self.get_queryset(), stream=response, ensure_ascii=False,
+                             **options)
+
+        #import pdb; pdb.set_trace()
+        f = open(cpath,'w')
+        f.write(response.content)
+        f.close()
+        return response
+
+
+
+
+
+class GetPolygonJson(GeoJSONLayerView):
+    # Options
+    precision = 4   # float
+    simplify = 0.5  # generalization
+    def get_queryset(self):
+        if(self.request.GET['id']=='0'):
+            return GeoPolygon.objects.all()
+        else:
+            return GeoPolygon.objects.all().filter(type_id=int(self.request.GET['id']))
+
+    def render_to_response(self, context, **response_kwargs):
+        from config.settings import BASE_DIR
+        import os.path
+        cpath = BASE_DIR+'/map_cache/'+self.request.GET['id']+'.txt'
+        if(os.path.exists(cpath)):
+            from django.http import HttpResponse
+            f = open(cpath,'r')
+            out = f.read()
+            f.close()
+            return HttpResponse(out, content_type="application/json")
+
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        serializer = GeoJSONSerializer()
+        response = self.response_class(**response_kwargs)
+        options = dict(properties=self.properties,
+                       precision=self.precision,
+                       simplify=self.simplify,
+                       srid=self.srid,
+                       geometry_field=self.geometry_field,
+                       force2d=self.force2d)
+        serializer.serialize(self.get_queryset(), stream=response, ensure_ascii=False,
+                             **options)
+
+        #import pdb; pdb.set_trace()
+        f = open(cpath,'w')
+        f.write(response.content)
+        f.close()
+        return response
+
+# Kvartals
+def sections(request): 
     base_url = request.build_absolute_uri('/')[:-1]
-    return render_to_response('admin/map.html', {'user': request.user, 'base_url': base_url})
+    return render_to_response('map/sections.html', {'user': request.user, 'base_url': base_url})
+
+# Vydels
+def regions(request):
+    from forestry.models import TypePolygon
+    types = TypePolygon.objects.all().filter(is_pub=True).order_by('fill_color')
+    base_url = request.build_absolute_uri('/')[:-1]
+    return render_to_response('map/regions.html', {"types":types, 'user': request.user, 'base_url': base_url})
+
+#    
+#    
+#    base_url = request.build_absolute_uri('/')[:-1]
+#    return render_to_response('map/regions.html', { "base_url": base_url})
+
+
+# Fire risk
+def risk(request,risk):
+    base_url = request.build_absolute_uri('/')[:-1]
+    legend = [['0', '#90EE90'],
+          ['0-66', '#FFAEB9'],
+          ['66-132', '#FA8072'],
+          ['132 - 198', '#FF4040'],
+          ['> 198', '#FF0000']]
+    context = {'base_url': base_url, 'risk': risk, 'legend': legend}
+    return render_to_response('map/risk.html', context, RequestContext(request))
+
+
+
     
 def get_kvartal_info(request):    
     pass
+
+def get_region_info(request):    
+    region_id = request.GET['id']
+    region = GeoPolygon.objects.all().get(pk=region_id)
+    base_url = request.build_absolute_uri('/')[:-1]
+    fe = ForestElement2GeoPolygon.objects.all().filter(geo_polygon=region_id)
+    return render_to_response('map/region_info.html', {"region_id": region_id, "region": region, "fe": fe, "base_url": base_url })
     
 def get_kvartal(request):    
     pass    
     
-def get_admin_urls(urls):
-    def get_urls():
-        my_urls = patterns('',
-            url(r'^map/$', admin.site.admin_view(my_view)),
-            url(r'^get-kvartal-info/$', admin.site.admin_view(get_kvartal_info), name="get-kvartal-info"),
-            url(r'^get-kvartal/$', MapLayer.as_view(model=GeoKvartal,properties=('number','id')), name='mushrooms'),
-        )
-        return my_urls + urls
-    return get_urls
-
-admin_urls = get_admin_urls(admin.site.get_urls())
-admin.site.get_urls = admin_urls    
+  
 
 class ForestryAdmin(TranslationAdmin):
     pass
@@ -135,8 +248,41 @@ class ValueParamPolygonAdmin(admin.ModelAdmin):
     fieldsets = [
         (u'TypeValues', {'fields': ('type_reg', 'region', 'type_param', 'value',)})
     ]
+
+    def get_urls(self):
+        urls = super(ValueParamPolygonAdmin, self).get_urls()
+
+        my_urls = patterns('',
+            url(r'^sections/$', admin.site.admin_view(sections)),
+            url(r'^regions/$', admin.site.admin_view(regions)),
+            url(r'^risk/(?P<risk>\w+)$', admin.site.admin_view(risk)),
+            url(r'^get-kvartal-info/$', admin.site.admin_view(get_kvartal_info), name="get-kvartal-info"),
+            url(r'^get-region-info/$', admin.site.admin_view(get_region_info), name="get-region-info"),
+            url(r'^get-kvartal/$', MapLayer.as_view(model=GeoKvartal,properties=('number','id')), name='mushrooms'),
+            url(ur'^get-polygon-json$',  GetPolygonJson.as_view(model=GeoPolygon,properties=('id',)), name='get-poligon-json'),
+            url(ur'^get-polygon-json-firerisk$',  GetPolygonJsonFirerisk.as_view(model=GeoPolygon,properties=('id','class_risk2',))),
+        )
+
+        return my_urls + urls
 admin.site.register(ValueParamPolygon, ValueParamPolygonAdmin)
 
 
+def get_admin_urls(urls):
+    def get_urls():
+        my_urls = patterns('',
+            url(r'^sections/$', admin.site.admin_view(sections)),
+            url(r'^regions/$', admin.site.admin_view(regions)),
+            url(r'^risk/(?P<risk>\w+)$', admin.site.admin_view(risk)),
+            url(r'^get-kvartal-info/$', admin.site.admin_view(get_kvartal_info), name="get-kvartal-info"),
+            url(r'^get-region-info/$', admin.site.admin_view(get_region_info), name="get-region-info"),
+            url(r'^get-kvartal/$', MapLayer.as_view(model=GeoKvartal,properties=('number','id')), name='mushrooms'),
+            url(ur'^get-polygon-json$',  GetPolygonJson.as_view(model=GeoPolygon,properties=('id',)), name='get-poligon-json'),
+            url(ur'^get-polygon-json-firerisk$',  GetPolygonJsonFirerisk.as_view(model=GeoPolygon,properties=('id','class_risk2',))),
+        )
+        return my_urls + urls
+    return get_urls
+
+admin_urls = get_admin_urls(admin.site.get_urls())
+  
 
 

@@ -1,0 +1,360 @@
+{% extends "admin/custom_index.html" %}
+{% load i18n %}
+
+
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+
+<h2> Fire risk </h2>
+
+<table>
+<tr>
+<td  valign="top" >
+
+ <div class="well" style="width:800px; height:700px; border: 2px solid silver" id = "map"></div>
+</td>
+<td valign="top" style="padding-left: 20px">
+
+
+
+
+<div id="info">
+
+  </div>
+
+
+
+
+<div class="panel panel-primary">
+
+    <div class="panel-heading">
+        <h3 class="panel-title">Legend</h3>
+    </div>
+    <div class="well panel-body">
+          <table>
+            <tr>
+                <td>Fire risk</td>
+                <td>Color</td>
+
+                  {% for c,v in legend %}
+
+                    <tr>
+                        <td> {{ c  }}   </td>
+                        <td>  <div style="width: 20px; height: 20px; background:{{v}} "  </td>
+                         
+
+                    </tr>
+
+
+                  {% endfor %}
+
+   </table>
+
+
+    </div>
+</div>
+
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">{% trans 'Input fire danger' %}</h3>
+    </div>
+    <div class="well panel-body">
+          <span>{% trans 'Fire danger' %}</span>
+
+          <input name="risk" id="risk_inp" value="1" style="width: 50px"">
+          <input type="button" onclick="setOpacity()" value="{% trans 'Show' %}">
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+</td>
+</tr>
+
+
+
+
+
+
+
+<script type="text/javascript">
+   function setOpacity()
+   {
+       r = $('#risk_inp').val()
+       //forest.setOpacity(r)
+       if(r>0.75 && r<=1)
+       {
+         var lookup = {
+        "0.00": {fillColor: "#90EE90"},
+        "1.00": {fillColor: "#FFAEB9"},
+        "2.00": {fillColor: "#FA8072"},
+        "3.00": {fillColor: "#FF4040"},
+        "4.00": {fillColor: "#FF0000"}
+         }
+      }
+
+      if(r>0.5 && r<=0.75)
+       {
+         var lookup = {
+        "0.00": {fillColor: "#90EE90"},
+        "1.00": {fillColor: "#FFAEB9"},
+        "2.00": {fillColor: "#FFAEB9"},
+        "3.00": {fillColor: "#FA8072"},
+        "4.00": {fillColor: "#FF4040"}
+         }
+      }
+
+
+      if(r>0.25 && r<=0.5)
+       {
+         var lookup = {
+        "0.00": {fillColor: "#90EE90"},
+        "1.00": {fillColor: "#FFAEB9"},
+        "2.00": {fillColor: "#FFAEB9"},
+        "3.00": {fillColor: "#FFAEB9"},
+        "4.00": {fillColor: "#FA8072"}
+         }
+      }
+
+      if(r>0 && r<=0.25)
+       {
+         var lookup = {
+        "0.00": {fillColor: "#90EE90"},
+        "1.00": {fillColor: "#FFAEB9"},
+        "2.00": {fillColor: "#FFAEB9"},
+        "3.00": {fillColor: "#FFAEB9"},
+        "4.00": {fillColor: "#FFAEB9"}
+         }
+      }
+
+      var style =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "#dd0000",
+                        strokeOpacity:1,
+                        strokeWidth: 1,
+                        //fillColor: "#aa0000",
+                        fillOpacity: 1,
+                        //label: '${firerisk}',
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: 0,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+      style.addUniqueValueRules("default", "class_risk2", lookup);
+      forest.styleMap = style;
+      forest.redraw();
+    }
+
+
+
+
+
+function init(){
+        var lon = 3665941.92388;
+        var lat = 5880439.46213;
+    var zoom = 13;
+    var options = {
+        div: "map",
+        layers: [new OpenLayers.Layer.OSM()],
+        projection: new OpenLayers.Projection("EPSG:4326"),
+         maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+    };
+    var  map = new OpenLayers.Map(options);
+
+
+
+
+            function setHTML(response) {
+            OpenLayers.Util.getElement('info').innerHTML = response.responseText;
+            $('#status-message').hide();
+            }
+
+
+
+
+
+         function updateinfo() {
+
+            if (forest.selectedFeatures.length == 1) {
+            $('#status-message').show();
+
+           var request = OpenLayers.Request.GET({
+                url: "{{ base_url }}/get-region-info",
+                params: {id: forest.selectedFeatures[0].data['id']},
+                callback: setHTML
+
+            });
+
+
+            } else {document.getElementById('info').value = ''}
+        }
+
+
+      var style =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "#dd0000",
+                        strokeOpacity:1,
+                        strokeWidth: 1,
+                        //fillColor: "#aa0000",
+                        fillOpacity: 1,
+                        //label: '${firerisk}',
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: 0,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+
+      var lookup = {
+            "0.00": {fillColor: "#90EE90"},
+            "1.00": {fillColor: "#FFAEB9"},
+            "2.00": {fillColor: "#FA8072"},
+            "3.00": {fillColor: "#FF4040"},
+            "4.00": {fillColor: "#FF0000"}
+      }
+
+      style.addUniqueValueRules("default", "class_risk2", lookup);
+
+
+        forest = new OpenLayers.Layer.Vector('{% trans "Risk layer" %}', {
+            //isBaseLayer: true,
+            projection: new OpenLayers.Projection('EPSG:4326'),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.HTTP({
+
+                url: "{{ base_url }}/get-polygon-json-firerisk?id=1",
+
+                params: {
+                    attrs: 'id,name',
+                    epsg: '900913'
+                },
+                format: new OpenLayers.Format.GeoJSON()
+
+            }),
+            styleMap: style
+        });
+
+
+
+         var select_options = {
+            hover: false,
+            onSelect: updateinfo
+          };
+         var select = new OpenLayers.Control.SelectFeature(forest, select_options);
+
+         var highlightCtrl = new OpenLayers.Control.SelectFeature(forest, {
+                hover: true,
+                highlightOnly: true,
+                renderIntent: "temporary"
+            });
+
+
+
+         map.addControl(highlightCtrl);
+         map.addControl(select);
+
+         highlightCtrl.activate();
+         select.activate();
+
+    map.addLayer(forest);
+
+
+
+
+
+
+
+
+
+    map.addControl(new OpenLayers.Control.LayerSwitcher({}));
+
+    if(!map.getCenter()){
+        map.zoomToMaxExtent();
+     }
+
+ //       map.addLayer(nesomk);
+//        map.addLayer(forest);
+
+          //  var proj = new OpenLayers.Projection("EPSG:900913");
+        var point = new OpenLayers.LonLat(lon, lat);
+        map.setCenter(point, zoom);
+
+   // map.zoomToExtent([3062373.1007906, 8962088.6911328, 18560133.457509, 9930698.7134278]);
+
+
+
+} ;
+$(document).ready(function(){
+init();
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

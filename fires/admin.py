@@ -86,3 +86,8 @@ class Fires2GeoPolygonAdmin(admin.ModelAdmin):
         (u'Fires2GeoPolygons', {'fields': ('fire', 'geo_polygon', 'kvartal', 'vydel',)})
     ]
 admin.site.register(Fires2GeoPolygon, Fires2GeoPolygonAdmin)
+
+
+
+
+

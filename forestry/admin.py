@@ -1,8 +1,9 @@
 from django.contrib import admin
-from forestry.models import ForestryGroup, Forestry, TypePolygon, GeoKvartal, GeoPolygon, ForestElement, ForestElement2GeoPolygon, TypeValue, TypeParamPolygon, ParamValueSelect, ValueParamPolygon
+from forestry.models import ForestryGroup, Forestry, TypePolygon, GeoKvartal, GeoPolygon, ForestElement, ForestElement2GeoPolygon, TypeValue, TypeParamPolygon, ParamValueSelect, ValueParamPolygon, GeoCell
 from fires.models import Rothermel
 from modeltranslation.admin import TranslationAdmin
 from modeltranslation.admin import TranslationTabularInline
+from django.contrib.gis.measure import Distance, D
 
 from modeltranslation.admin import TranslationAdmin
 from django.contrib.gis import admin
@@ -145,6 +146,62 @@ def risk(request,risk):
     context = {'base_url': base_url, 'risk': risk, 'legend': legend}
     return render_to_response('map/risk.html', context, RequestContext(request))
 
+
+
+# Fire simulation
+def fire_sim(request):
+    base_url = request.build_absolute_uri('/')[:-1]
+    legend = [['0', '#90EE90'],
+          ['0-66', '#FFAEB9'],
+          ['66-132', '#FA8072'],
+          ['132 - 198', '#FF4040'],
+          ['> 198', '#FF0000']]
+    context = {'base_url': base_url, 'legend': legend}
+    return render_to_response('map/fire_sim.html', context, RequestContext(request))
+
+
+# Fire simulation
+def fire_simulation(request):
+    from forestry.models import TypePolygon
+    types = TypePolygon.objects.all().filter(is_pub=True).order_by('fill_color')
+    base_url = request.build_absolute_uri('/')[:-1]
+    return render_to_response('map/fire_simulation.html', {"types":types, 'user': request.user, 'base_url': base_url})
+   
+
+#http://127.0.0.1:8000/get_closest/27437
+def get_closest(request, cell_id):
+    cell_geom = GeoCell.objects.get(pk=cell_id)
+    closest_points = GeoCell.objects.filter(geom__dwithin = (cell_geom.geom, D(km = 500)))
+    #print closest_points
+    
+    return HttpResponse('tt')
+
+#http://127.0.0.1:8000/get_closest?cell_id=27437
+class GetClosestJson(GeoJSONLayerView):
+    # Options
+    precision = 4   # float
+    simplify = 0.5  # generalization
+    def get_queryset(self):
+	cell_geom = GeoCell.objects.get(pk=self.request.GET['cell_id'])
+        return GeoCell.objects.filter(geom__dwithin = (cell_geom.geom, 0.01))
+        
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        serializer = GeoJSONSerializer()
+        response = self.response_class(**response_kwargs)
+        options = dict(properties=self.properties,
+                       precision=self.precision,
+                       simplify=self.simplify,
+                       srid=self.srid,
+                       geometry_field=self.geometry_field,
+                       force2d=self.force2d)
+        serializer.serialize(self.get_queryset(), stream=response, ensure_ascii=False,
+                             **options)
+
+  
+        return response
 
 
     

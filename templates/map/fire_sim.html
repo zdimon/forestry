@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
- <h2> Sections </h2>
+ <h2> Fire simulation </h2>
  <div class="well" style="width:800px; height:700px; border: 2px solid silver" id="map_block"></div>
  
  
@@ -28,7 +28,7 @@
             var  map = new OpenLayers.Map(options);
 
             var style = new OpenLayers.Style({fillColor : "green",
-                                          label: '${number}',
+   //                                       label: '${id}',
                                           fillOpacity : 0.4});
 
 
@@ -37,9 +37,10 @@
                         strokeColor: "#ff0000",
                         strokeOpacity: .7,
                         strokeWidth: 1,
-                        fillColor: "green",
-                        fillOpacity: .7,
-                        label: '${number}',
+//Color and fill opacity of cells
+                        fillColor: "",
+                        fillOpacity: .1,
+//                        label: '${id}',     
                         cursor: "pointer"
                     }),
                     "temporary": new OpenLayers.Style({
@@ -47,8 +48,8 @@
                         strokeOpacity: .9,
                         strokeWidth: 2,
                         fillColor: "#ffff33",
-                        fillOpacity: .3,
-                        label: '${number}',
+                        fillOpacity: 0,
+ //                       label: '${number}',
                         cursor: "pointer"
                     }),
                     "select": new OpenLayers.Style({
@@ -58,17 +59,17 @@
                         fillColor: "#0033ff",
                         fillOpacity: 0,
                         graphicZIndex: 2,
-                        label: '${number}',
+//                        label: '${number}',
                         cursor: "pointer"
                     })
                     }) ;
 
 
-            geodetdom = new OpenLayers.Layer.Vector("Кварталы", {
+            geocell = new OpenLayers.Layer.Vector("Ячейки", {
                 projection: new OpenLayers.Projection('EPSG:4326'),
                 strategies: [new OpenLayers.Strategy.Fixed()],
                 protocol: new OpenLayers.Protocol.HTTP({
-                    url: "{{ base_url }}/get-kvartal",
+                    url: "{{ base_url }}/get-cell",
                     params: {
                         attrs: 'id,name',
                         epsg: '900913'
@@ -83,7 +84,7 @@
 
             json = new OpenLayers.Format.GeoJSON();
             features = json.read();
-            map.addLayer(geodetdom);
+            map.addLayer(geocell);
 		
 	    map.addControl(new OpenLayers.Control.MousePosition());
 

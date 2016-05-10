@@ -52,6 +52,18 @@ class GeoKvartal(models.Model):
 
 
 
+class GeoCell(models.Model):
+    geom = models.MultiPolygonField('Country Border')
+    objects = models.GeoManager()
+    def __unicode__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name=_(u'Cell')
+        verbose_name_plural=_(u'Cells')
+
+
+
 
 
 #Polygon type

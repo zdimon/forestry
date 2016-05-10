@@ -1,0 +1,458 @@
+{% extends "admin/custom_index.html" %}
+
+ 
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="http://openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+ <style>
+.olAlphaImg {
+                opacity:0.45;
+                filter: alpha(opacity = 45);
+}
+
+.olControlLayerSwitcher .layersDiv {
+                opacity:0.85;
+                filter: alpha(opacity = 85);
+                background-color: #D5D5D5;
+                -moz-border-radius: 15px 0px 0px 15px;
+                border-radius: 15px 0px 0px 15px;
+}
+
+.olControlLayerSwitcher {
+                color:#666666;                
+		-moz-border-radius: 15px 0px 0px 15px;
+                border-radius: 15px 0px 0px 15px;
+                width:15em;
+
+
+
+margin-top: 20px !important;
+    height: 700px !important;
+    width: 17em !important;
+    overflow-y: scroll !important;
+
+
+
+}
+
+.olButton {
+                font-weight:500;
+}
+
+.labelSpan {
+                font-family: "Open Sans","Helvetica Neue","Helvetica","Arial,sans-serif";
+}
+
+.olControlLayerSwitcher br {
+                display:none;
+}
+
+#OpenLayers_Control_LayerSwitcher_371 input {
+                border-color:#d5d5d5;  
+                background-color: #d5d5d5;
+                padding-right: 0px;
+                padding-bottom: 10px;
+                margin-top: 7px;
+                margin-right:10px;
+                border-radius: 10px;
+                -moz-border-radius: 10px;
+                float:left;}
+
+.baseLbl {
+                display:none;
+}
+</style>
+
+
+<h2> Regions </h2>
+<table>
+<tr>
+<td  valign="top">
+ <div class="well" style="width:800px; height:700px; border: 2px solid silver" id="map_block"></div>
+</td>
+ <td valign="top" style="padding-left: 20px">
+
+
+<div class="span3 recent-actions">
+
+      <div id="info">
+
+  </div>
+
+    <div class="panel panel-primary">
+    <div class="panel-heading">
+    <h3 class="panel-title">Legend</h3>
+  </div>
+      <div class="well panel-body">
+          <table>
+    <tr>
+       <td>Name</td>
+       <td>Color</td>
+    </tr>
+    {% for t in types %}
+        <tr>
+	  <td> <input  class="lswich" id="{{ t.id }}" type="checkbox" checked="checked" /> </td>
+          <td>
+
+             {{ t }}</td>
+          <td> {{ t.fill_color_rect }}</td>
+        </tr>
+
+    {% endfor %}
+
+    </table>
+
+
+
+ <table>
+    <tr>
+       <td>Name</td>
+       <td>Color</td>
+    </tr>
+ 
+        <tr>
+          <td>
+
+ <div id="layerswitcher" class="olControlLayerSwitcher"></div>
+          <td>
+	</td>
+        </tr>
+
+
+
+    </table>
+
+
+
+      </div>
+ </div>
+</div>
+</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+var map
+
+function init(){
+       
+        var lon = 3665941.92388;
+        var lat = 5880439.46213;
+    var zoom = 13;
+    var options = {
+        div: "map_block",
+        layers: [new OpenLayers.Layer.OSM()],
+        projection: new OpenLayers.Projection("EPSG:4326"),
+         maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+    };
+            map = new OpenLayers.Map(options);
+
+
+
+
+            function setHTML(response) {
+            OpenLayers.Util.getElement('info').innerHTML = response.responseText;
+            $('#status-message').hide();
+            }
+
+
+    {% for t in types %}
+
+
+
+
+ var stylemap =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .7,
+                        strokeWidth: 1,
+//Color and fill opacity of cells
+                        fillColor: "",
+                        fillOpacity: .1,
+//                        label: '${id}',     
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ffff33",
+                        strokeOpacity: .9,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: 0,
+ //                       label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+//                        label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+
+
+
+           var style{{ t.id }} =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "{{ t.border_color }}",
+                        strokeOpacity: .7,
+                        strokeWidth: 1,
+                        fillColor: "{{ t.fill_color }}",
+                        fillOpacity: .7,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .9,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: .3,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+
+
+        forest{{ t.id }} = new OpenLayers.Layer.Vector("{{ t.id }}", {
+            //isBaseLayer: true,
+            projection: new OpenLayers.Projection('EPSG:4326'),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.HTTP({
+
+                url: "{{ base_url }}/get-polygon-json?id={{ t.id }}",
+
+                params: {
+                    attrs: 'id,name',
+                    epsg: '900913'
+                },
+                format: new OpenLayers.Format.GeoJSON()
+
+            }),
+            styleMap: style{{ t.id }}
+        });
+
+
+
+
+    map.addLayer(forest{{ t.id }});
+
+
+
+
+    {% endfor %}
+
+
+
+
+
+            geocell = new OpenLayers.Layer.Vector("Ячейки", {
+                projection: new OpenLayers.Projection('EPSG:4326'),
+                strategies: [new OpenLayers.Strategy.Fixed()],
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: "{{ base_url }}/get-cell",
+                    params: {
+                        attrs: 'id,name',
+                        epsg: '900913'
+                    },
+                    format: new OpenLayers.Format.GeoJSON()
+
+                }),
+                styleMap: stylemap
+            });
+
+
+
+
+
+
+map.addLayer(geocell);
+
+
+
+
+
+
+         function updateinfo() {
+
+            if (forest.selectedFeatures.length == 1) {
+            $('#status-message').show();
+
+           var request = OpenLayers.Request.GET({
+                url: "{{ base_url }}/get-region-info",
+                params: {id: forest.selectedFeatures[0].data['id']},
+                callback: setHTML
+
+            });
+
+
+            } else {document.getElementById('info').value = ''}
+        }
+
+
+      var style =   new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                        strokeColor: "{{ t.border_color }}",
+                        strokeOpacity:.7,
+                        strokeWidth: 1,
+                        fillColor: "{{ t.fill_color }}",
+                        fillOpacity: 0,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "temporary": new OpenLayers.Style({
+                        strokeColor: "#ff0000",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#ffff33",
+                        fillOpacity: 0,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#0033ff",
+                        strokeOpacity: .7,
+                        strokeWidth: 2,
+                        fillColor: "#0033ff",
+                        fillOpacity: 0,
+                        graphicZIndex: 2,
+                        //label: '${number}',
+                        cursor: "pointer"
+                    })
+                    }) ;
+
+
+        forest = new OpenLayers.Layer.Vector("Информация", {
+            //isBaseLayer: true,
+            projection: new OpenLayers.Projection('EPSG:4326'),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.HTTP({
+
+                url: "{{ base_url }}/get-polygon-json?id=0",
+
+                params: {
+                    attrs: 'id,name',
+                    epsg: '900913'
+                },
+                format: new OpenLayers.Format.GeoJSON()
+
+            }),
+            styleMap: style
+        });
+         var select_options = {
+            hover: false,
+            onSelect: updateinfo
+          };
+         var select = new OpenLayers.Control.SelectFeature(forest, select_options);
+
+         var highlightCtrl = new OpenLayers.Control.SelectFeature(forest, {
+                hover: true,
+                highlightOnly: true,
+                renderIntent: "temporary"
+            });
+
+         map.addControl(highlightCtrl);
+         map.addControl(select);
+
+         highlightCtrl.activate();
+         select.activate();
+
+    map.addLayer(forest);
+
+
+
+
+
+
+
+
+
+    //map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
+
+
+
+
+    if(!map.getCenter()){
+        map.zoomToMaxExtent();
+     }
+
+ //       map.addLayer(nesomk);
+//        map.addLayer(forest);
+
+          //  var proj = new OpenLayers.Projection("EPSG:900913");
+        var point = new OpenLayers.LonLat(lon, lat);
+        map.setCenter(point, zoom);
+
+   // map.zoomToExtent([3062373.1007906, 8962088.6911328, 18560133.457509, 9930698.7134278]);
+} ;
+
+function click(el){
+	alert(el);
+}
+
+function getLayerByName(name) {
+
+
+var mLayers = map.layers;
+
+for(var a = 0; a < mLayers.length; a++ ){
+   
+if (mLayers[a].name == name) {
+      return mLayers[a];
+    }
+
+   
+};
+
+}
+
+
+$(document).ready(function(){ 
+
+init(); 
+
+
+
+$(".lswich").change(function() {
+    
+    name = $(this).attr('id');
+    
+    layer = getLayerByName(name);
+	
+    if(this.checked) {
+    	layer.setVisibility(true)    
+    } else {
+	layer.setVisibility(false)
+    }
+});
+
+
+
+});
+</script>
+
+
+
+
+{% endblock %}
+
+

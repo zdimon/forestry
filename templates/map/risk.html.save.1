@@ -218,7 +218,7 @@ function init(){
             $('#status-message').show();
 
            var request = OpenLayers.Request.GET({
-                url: "/get-region-info",
+                url: "{{ base_url }}/get-region-info",
                 params: {id: forest.selectedFeatures[0].data['id']},
                 callback: setHTML
 
